@@ -685,10 +685,53 @@ The AECC framework provides the formal foundation: equation~\eqref{eq:opt}
 is the objective, equation~\eqref{eq:route} is the current approximation,
 and the learning loop (Phase~0.59--0.60) is the adaptation mechanism.
 
-CRYS-L is the showcase sub-component for deterministic calculations:
-open, verifiable, and demonstrably faster and more accurate than LLM for
-its domain. The Qomni Engine is the proprietary orchestrator that decides
-when to use CRYS-L, when to use crystals, and when to fall through to the LLM.
+\subsection{Ecosystem Positioning: Qomni vs.\ Dominant AI Paradigms}
+
+Table~\ref{tab:ecosystem} maps Qomni against the four dominant inference
+paradigms used in production AI systems.
+
+\begin{table}[h]
+\centering
+\caption{AI inference ecosystem: paradigm comparison}
+\label{tab:ecosystem}
+\begin{tabular}{lccccc}
+\toprule
+Paradigm & Strategy & LLM-first? & Cost & Exact? & Adaptive? \\
+\midrule
+Monolithic LLM & Single & Yes & Very high & No & No \\
+RAG + LLM & 2-step & Yes & High & No & No \\
+Speculative Decoding & 2-model & Yes & Medium & No & No \\
+MoE (mixture-of-experts) & Multi-model & Yes & Medium & No & No \\
+\textbf{Qomni AECC} & \textbf{7-strategy} & \textbf{Last resort} & \textbf{Minimal} & \textbf{Yes (Strat.\ 1--2)} & \textbf{Yes} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Open vs.\ Proprietary: The CRYS-L Strategy}
+
+The Qomni open/proprietary split follows the same pattern used by
+Linux + cloud vendors, TensorFlow + Google, and LLVM + Apple:
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+Component & Status & Rationale \\
+\midrule
+CRYS-L language \& grammar & Open (MIT) & Community adoption, trust \\
+CRYS-L compiler \& WASM runtime & Open (MIT) & Tooling ecosystem \\
+Crystal format (specification) & Open (documented) & Interoperability \\
+Standard library (stdlib/) & Open (MIT) & Contribution surface \\
+Qomni Planner core & \textbf{Proprietary} & Competitive advantage \\
+Learning loop engine & \textbf{Proprietary} & Competitive advantage \\
+Crystal retrieval engine & \textbf{Proprietary} & Competitive advantage \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Opening CRYS-L creates adoption and trust; keeping the Qomni Engine
+proprietary preserves the architectural advantage.
+The AECC remains Qomni's differentiator regardless of how many
+third-party CRYS-L plans exist.
 
 % ─────────────────────────────────────────────────────────────────────────────
 \section{Conclusion}
