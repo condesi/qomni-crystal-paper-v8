@@ -200,9 +200,10 @@ plan_pump_sizing(Q_gpm: f64, P_psi: f64, eff: f64 = 0.7) {
 **Supported domains (v2):** hidraulica · nfpa\_electrico · civil · mecanica · termica · sanitaria
 
 **How to contribute a new plan:**
-1. Write your `.crysl` plan following the grammar in [`architecture/crysl_v2_language_spec.md`](architecture/crysl_v2_language_spec.md)
-2. See examples in [`architecture/crysl_v2_examples.crysl`](architecture/crysl_v2_examples.crysl)
-3. Submit a Pull Request — all valid plans following the grammar are welcome
+1. Visit the dedicated CRYS-L repo: **[github.com/condesi/crysl-lang](https://github.com/condesi/crysl-lang)**
+2. Write your `.crysl` plan following the grammar in [`architecture/crysl_v2_language_spec.md`](architecture/crysl_v2_language_spec.md)
+3. See examples in [`architecture/crysl_v2_examples.crysl`](architecture/crysl_v2_examples.crysl)
+4. Submit a Pull Request to `condesi/crysl-lang` — all valid plans following the grammar are welcome
 
 ---
 
