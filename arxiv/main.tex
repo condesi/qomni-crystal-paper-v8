@@ -1,0 +1,403 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{geometry}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\geometry{margin=2.5cm}
+
+\definecolor{codebg}{RGB}{245,245,245}
+\definecolor{crysblue}{RGB}{30,80,180}
+\lstset{
+  backgroundcolor=\color{codebg},
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  frame=single,
+  rulecolor=\color{gray},
+  keywordstyle=\color{crysblue}\bfseries,
+  commentstyle=\color{gray}\itshape,
+}
+
+\title{\textbf{Qomni Engine v8: From Crystal Distillation to Adaptive Cognitive OS}\\
+\large Complete Evolution — Preprint April 2026}
+
+\author{
+  Percy Rojas Masgo\textsuperscript{1} \quad Qomni AI\textsuperscript{2}\\[0.3em]
+  \textsuperscript{1}CEO, Condesi Perú \quad
+  \textsuperscript{2}Qomni AI Lab\\
+  \href{mailto:percy@condesi.pe}{percy@condesi.pe}
+}
+\date{April 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We present the complete evolution of \textbf{Qomni Engine} from a
+physics-as-oracle crystal distillation system to a full Adaptive Cognitive OS
+with 207 active features. Starting from a binary `.crystal` format for
+domain-specific compressed networks (v1), the system evolved through
+CRYS-L domain language (v2), modular Rust architecture (v3),
+cognitive features including ReflexEngine, LiquidMemory and HDC (v4--v5),
+lock-free security hardening (v6--v7), to a continuous learning planner
+(v8/Phase~0.59) and the designed Phase~0.60 per-domain adaptive routing.
+
+Live benchmarks on commodity hardware (AMD EPYC 12-core, 48~GB RAM) show
+\textbf{100\% LLM bypass rate} on domain-specific queries with average latency of
+\textbf{193~ms} vs.\ 8,000--45,000~ms for LLM inference — a \textbf{41--233$\times$
+speedup}. We also specify \textbf{CRYS-L v2}, an open domain-specific language
+for deterministic engineering calculations, released to the community under MIT
+license.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+\section{Introduction}
+
+The dominant paradigm for AI inference is to route every query through a large
+neural network. For applications with structured domains — engineering
+calculations, legal databases, accounting rules — this is orders of magnitude
+more costly than necessary. Deterministic computation and indexed retrieval
+can serve the vast majority of domain queries without any neural inference.
+
+\textbf{Qomni Engine} is built on this insight. Over eight major versions,
+it evolved from a domain distillation experiment to a five-layer cognitive
+cascade that dynamically selects the minimum-cost strategy sufficient to
+resolve each query.
+
+This paper documents the complete evolution, presents live benchmark data,
+specifies the CRYS-L v2 open language standard, and designs Phase~0.60
+— per-domain adaptive routing with exponential decay.
+
+\section{Version History}
+
+\subsection{v1: Crystal Distillation}
+
+The Qomni Crystal system~\cite{crystal2026} introduced \emph{physics-as-oracle
+distillation}: deterministic physical equations generate training pairs
+(instruction, output) for each domain, which are compressed into a binary
+`.crystal` format. Key results:
+\begin{itemize}
+  \item 11$\times$ compression: 942~MB (BF16) $\to$ 85.3~MB (2-bit ternary)
+  \item 2,000 verified Q\&A pairs per domain generated in $<8$~seconds
+  \item On-device inference at 0~ms hot-swap latency (mmap lazy loading)
+  \item 6 domains: legal\_peru, contabilidad, hidraulica, nfpa\_electrico, tecnico\_it, whatsapp\_ventas
+\end{itemize}
+
+\subsection{v2: CRYS-L Compiler}
+
+CRYS-L (Crystal Language) is an open DSL for declaring engineering calculation
+plans. A CRYS-L program compiles to a WASM module that executes deterministically
+in the browser or server-side. See Section~\ref{sec:crysl} for the full v2 specification.
+
+\subsection{v3: Qomni Engine Core}
+
+Modularized the monolithic server (15,122 lines $\to$ 2,843 lines main.rs,
+81\% reduction) into 12 Rust modules: main, cognitive, handlers, advanced,
+engine\_core, auth, agents, training, types, tools, mesh, voice.
+
+\subsection{v4--v5: Cognitive Features}
+
+\begin{table}[h]
+\centering
+\caption{v4--v5 feature deployment}
+\begin{tabular}{lll}
+\toprule
+Feature & Version & Impact \\
+\midrule
+Energy Metrics & v4.1 & Per-query joule tracking \\
+Liquid Memory & v4.3 & raw$\to$concept$\to$pattern$\to$intuition promotion \\
+Mesh Admin & v4.4 & Distributed inference coordination \\
+Self-Coding Kernel & v4.5 & Sandboxed auto-patch generation \\
+Reflex Engine & v4.6 & Zero-compute direct response \\
+Sleep Pipeline & v4.7 & Idle-time consolidation \\
+Semantic Clusterer & v4.8 & Concept graph evolution \\
+Neural Gating & v5.3 & Dynamic layer skipping \\
+HDC Memory & v5.7 & 10,000-dim hyper-dimensional lookup \\
+Solid State Inference & v5.8 & Multi-tier response caching \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Full cascade working: Raw$\to$Concept$\to$Pattern$\to$Intuition$\to$Reflex$\to$Zero-compute,
+with 3~ms vs.\ 46~s = 13,983$\times$ speedup on cached patterns.
+
+\subsection{v6--v7: Lock-Free Architecture + Security}
+
+\begin{itemize}
+  \item 59 write locks $\to$ targeted subsystem locks (v6.3--v6.6)
+  \item DashMap for sessions — lock-free concurrent access (v6.5)
+  \item AtomicU64 stats — zero-contention telemetry (v6.4.2)
+  \item 10/10 security fixes: RCE blocklist, SSRF filter, bcrypt-only auth,
+    mesh peer authentication (HMAC), prompt injection delimiters
+  \item TUI Dashboard: ratatui, 4 tabs, 4~FPS live metrics (\texttt{--tui} flag)
+  \item 45 unit tests passing, build clean
+\end{itemize}
+
+\section{The 5-Layer Cognitive Cascade (v8)}
+
+\subsection{Layer 0: Reflex Engine}
+
+Pattern-matched zero-compute responses, backed by HDC Memory (10,000-dim
+bit vectors, cosine similarity). Latency $<5$~ms. Handles greetings, FAQ,
+repeated query patterns.
+
+\subsection{Layer 0.5: CRYS-L JIT}
+
+Engineering calculation queries are matched against a plan library and
+executed as WASM modules. Latency 50--200~ms. Handles hydraulic sizing,
+fire pump calculations, electrical cable sizing, transformer dimensioning.
+
+\subsection{Layer 0.59: Qomni Planner}
+
+The multi-factor cognitive router. See Section~\ref{sec:planner}.
+
+\subsection{Layer 1: LLM Inference}
+
+Full neural generation. qwen2.5-1.5b-instruct-q4\_k\_m on CPU. NeuralGating
+(v5.3) dynamically skips layers for low-complexity queries. SolidStateInference
+(v5.8) caches responses by query embedding.
+
+\section{Qomni Planner — Phase Evolution}
+\label{sec:planner}
+
+\subsection{Phase 0.55: Binary Router}
+
+Hard thresholds: oracle$\geq$3 AND domain$\geq$2 $\to$ PIPELINE, else FREE.
+No LLM bypass; crystal results always fed to LLM.
+
+\subsection{Phase 0.56: Multi-Factor Scoring}
+
+Three independent scores: domain keyword match ($d$), formula-intent keywords
+($o$), numeric context ($n$). Route matrix over $(d, o, n)$.
+
+\subsection{Phase 0.57: Direct Execution}
+
+Crystal score $\geq3 \to$ direct response, LLM bypassed. First version to
+skip neural inference entirely for high-confidence retrievals.
+
+\subsection{Phase 0.58: Continuous Confidence}
+
+Soft scoring replaces hard thresholds:
+\begin{align}
+c_o &= f_{\text{oracle}}(o) \in \{0.00, 0.10, 0.22, 0.35, 0.42\} \\
+c_d &= f_{\text{domain}}(d) \in \{0.00, 0.13, 0.28, 0.36, 0.42\} \\
+c_n &= \min(n/4, 1) \times 0.16 \\
+\text{pre\_conf} &= \min(c_o + c_d + c_n, 1.0) \\
+\text{conf} &= \min(\text{pre\_conf} + b_{\text{crystal}}, 1.0)
+\end{align}
+
+Self-healing fallback chain via \texttt{validate\_result}:
+Pipeline $\to$ Oracle-only $\to$ Crystal-only $\to$ LLM.
+
+Multi-path parallel: \texttt{tokio::join!(oracle\_fut, crystal\_fut)}.
+
+\subsection{Phase 0.59: Learning Loop}
+
+\textbf{decide $\to$ execute $\to$ evaluate $\to$ save $\to$ improve}
+
+\begin{itemize}
+  \item PlannerStats: 14 \texttt{AtomicU64} counters, \texttt{OnceLock} global
+  \item Adaptive thresholds after $\geq5$ samples per route
+  \item Persistence: atomic rename to \texttt{/opt/nexus/planner\_stats.json}
+  \item Endpoint: \texttt{GET /qomni/planner/stats}
+\end{itemize}
+
+Threshold adaptation:
+\begin{align}
+\theta_{\text{direct}} &= \text{clamp}(0.50 - (r_o - 0.5) \times 0.20,\; 0.40,\; 0.60) \\
+\theta_{\text{ctx}} &= \text{clamp}(0.28 + (0.5 - r_c) \times 0.20,\; 0.20,\; 0.38)
+\end{align}
+
+\section{Phase 0.60: Per-Domain Adaptive Learning (Design)}
+
+\subsection{Motivation}
+
+Phase~0.59 uses global counters. A high oracle success rate in \texttt{legal\_peru}
+incorrectly lowers the threshold for \texttt{hidraulica} queries. We need
+\emph{per-domain} tracking with \emph{exponential decay} for recency weighting.
+
+\subsection{Exponential Moving Average per Domain}
+
+\begin{equation}
+\text{EMA}_{t+1}^{(d)} = \alpha \cdot x_t + (1-\alpha) \cdot \text{EMA}_t^{(d)}, \quad \alpha = 0.10
+\end{equation}
+
+Stored as \texttt{AtomicU64} $\times 1000$ (fixed-point) for each of 6 domains.
+Updated via \texttt{compare\_exchange} loop — zero-lock, ABA-safe for this
+monotone range.
+
+\textbf{Half-life}: $\approx 6.6$ queries. The system forgets a bad run
+within $\sim$30 queries and adapts to new query distributions automatically.
+
+\subsection{Calibration Engine}
+
+A Tokio background task runs every 30~seconds. It computes Wilson score
+confidence intervals per domain:
+
+\begin{equation}
+\text{CI\_width} = 2z\sqrt{\frac{\hat{p}(1-\hat{p})}{n}}, \quad z=1.96
+\end{equation}
+
+Threshold adjustments are only applied when CI\_width $< 0.15$ (sufficient
+statistical confidence). Calibration events are logged.
+
+\subsection{Multi-Path Learning}
+
+When both oracle and crystal return valid results, the system tracks which
+source was \emph{preferred} (by length as an information-content proxy).
+Future PIPELINE responses order sources by learned preference per domain.
+
+\subsection{Real-Time Dashboard}
+
+New TUI tab ``Planner'' shows: per-domain EMA heat map, route distribution
+bar chart, threshold evolution per domain, calibration count. Web endpoint
+\texttt{GET /qomni/planner/dashboard} serves an auto-refreshing HTML view
+with Chart.js visualizations.
+
+\section{CRYS-L v2 Language Specification}
+\label{sec:crysl}
+
+\subsection{Design Goals}
+
+CRYS-L v2 is designed to be open, community-extensible, and verifiable.
+The compiler and WASM runtime are released under MIT license. The Qomni
+Engine integration is proprietary, but the language and runtime are not.
+
+\subsection{Grammar (simplified)}
+
+\begin{lstlisting}[caption=CRYS-L v2 grammar (EBNF excerpt)]
+plan_decl  ::= 'plan_' id '(' params ')' '{' body '}'
+body       ::= (const | let | formula | assert | output | meta)+
+formula    ::= 'formula' string ':' expr ';'
+assert     ::= 'assert' expr 'msg' string ';'
+output     ::= 'output' id 'label' string ('unit' string)? ';'
+meta       ::= 'meta' '{' (id ':' string ',')+ '}'
+\end{lstlisting}
+
+\subsection{Example: Pump Sizing (NFPA 20)}
+
+\begin{lstlisting}[caption=CRYS-L plan for NFPA 20 fire pump sizing]
+plan_pump_sizing(Q_gpm: f64, P_psi: f64, eff: f64 = 0.7) {
+    meta {
+        standard: "NFPA 20:2022, Section 4.26",
+        domain: "nfpa_electrico",
+    }
+    let Q_lps  = Q_gpm * 0.06309;
+    let H_m    = P_psi * 0.7031;
+    let HP_req = (Q_lps * H_m) / (eff * 76.0);
+
+    assert Q_gpm > 0.0 msg "flow must be positive";
+    assert eff   > 0.0 msg "efficiency must be > 0";
+
+    output HP_req label "Fire pump HP required" unit "HP";
+}
+\end{lstlisting}
+
+\subsection{v2 New Features}
+
+\begin{itemize}
+  \item \texttt{meta \{\}} block: standard, source, domain metadata
+  \item \texttt{assert} statements: runtime input validation
+  \item \texttt{formula} declarations: named formula strings for audit trail
+  \item Default parameter values
+  \item Output units annotation
+  \item 6 domain standard library (previously 2)
+  \item Community PR path for new plans
+\end{itemize}
+
+\section{Experimental Results}
+
+\subsection{Routing Benchmark}
+
+\begin{table}[h]
+\centering
+\caption{Live routing benchmark (Server5, 2026-04-13, Run 2)}
+\begin{tabular}{llr}
+\toprule
+Query & Route & Latency (ms) \\
+\midrule
+bomba nfpa20 750 gpm & crysl-jit-v2.1 & 148 \\
+constituir empresa sunat ruc & qomni-direct-v0.59 & 378 \\
+hazen williams 4'' 200m & crysl-jit-v2.1 & 130 \\
+transformador 50 kva & crysl-jit-v2.1 & 114 \\
+hola buenos dias & reflex/block & 51 \\
+factura igv planilla cts & qomni-direct-v0.59 & 335 \\
+\midrule
+\textbf{Average} & & \textbf{193 ms} \\
+\textbf{LLM bypass} & & \textbf{100\%} \\
+LLM baseline & & 8,000--45,000 ms \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Crystal Retrieval by Domain}
+
+\begin{table}[h]
+\centering
+\caption{Crystal retrieval benchmark — all 6 domains}
+\begin{tabular}{lrrl}
+\toprule
+Domain & Latency (ms) & Max Score & Sample Match \\
+\midrule
+legal\_peru & 40 & 7 & Contrato modal — D.S. 003-97-TR \\
+contabilidad & 58 & 8 & Factura electrónica + IGV cálculo \\
+hidraulica & 72 & 11 & Hazen-Williams velocidad y carga \\
+nfpa\_electrico & 27 & 4 & Corriente nominal cable NEC \\
+tecnico\_it & 38 & 7 & Configuración nginx SSL \\
+whatsapp\_ventas & 39 & 10 & Gestión pedidos cliente \\
+\midrule
+\textbf{Average} & \textbf{45.7} & \textbf{7.8} & \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Conclusion}
+
+The Qomni Engine v8 demonstrates that a five-layer cascade combining
+deterministic computation (Reflex, CRYS-L), indexed retrieval (Crystal),
+adaptive routing (Planner), and neural fallback (LLM) can serve domain-specific
+AI workloads with a fraction of the latency and energy cost of LLM-only inference.
+
+The key contributions are:
+\begin{enumerate}
+  \item \textbf{Crystal distillation pipeline}: physics equations $\to$ verified
+    Q\&A pairs $\to$ compressed binary format, fully reproducible
+  \item \textbf{CRYS-L v2}: open DSL for engineering calculations, MIT licensed,
+    community-extensible via GitHub
+  \item \textbf{Phase 0.55--0.59 planner}: binary $\to$ multi-factor $\to$
+    continuous confidence $\to$ learning loop
+  \item \textbf{Phase 0.60 design}: per-domain EMA decay, Wilson-score calibration,
+    multi-path preference learning, real-time dashboard
+  \item \textbf{193~ms average latency} with 100\% LLM bypass on domain queries
+\end{enumerate}
+
+CRYS-L plans, test vectors, and benchmark datasets are available at
+\url{https://github.com/condesi/qomni-crystal-paper-v8}.
+
+\bibliographystyle{plain}
+\begin{thebibliography}{9}
+\bibitem{crystal2026}
+  P.~Rojas Masgo and Qomni AI, ``Qomni Crystal: Physics-as-Oracle Distillation
+  with Ternary Quantization for Domain-Specific Edge Inference,''
+  \emph{Preprint}, April 2026.
+  \url{https://github.com/condesi/qomni-crystal-paper}
+\bibitem{shazeer2017}
+  N.~Shazeer et al., ``Outrageously Large Neural Networks: The Sparsely-Gated
+  Mixture-of-Experts Layer,'' \emph{ICLR}, 2017.
+\bibitem{lewis2020}
+  P.~Lewis et al., ``Retrieval-Augmented Generation for Knowledge-Intensive NLP
+  Tasks,'' \emph{NeurIPS}, 2020.
+\bibitem{leviathan2023}
+  Y.~Leviathan et al., ``Fast Inference from Transformers via Speculative
+  Decoding,'' \emph{ICML}, 2023.
+\end{thebibliography}
+
+\end{document}

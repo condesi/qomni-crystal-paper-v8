@@ -1,0 +1,43 @@
+{
+  "benchmark": "Qomni Engine v8 — Full Routing Benchmark",
+  "server": "Server5 (AMD EPYC 12-core, 48GB RAM, 500GB NVMe)",
+  "date": "2026-04-13",
+  "version": "qomni-server v1.2.2 (207 features)",
+  "run_1": {
+    "queries": [
+      {"query": "cuantos hp necesita una bomba nfpa20 para 750 gpm", "route": "crysl-jit-v2.1", "layer": "0.5", "latency_ms": 146, "llm": false},
+      {"query": "como constituir una empresa en peru sunat ruc contrato", "route": "qomni-direct-v0.59", "layer": "0.59", "latency_ms": 323, "llm": false},
+      {"query": "calcular caudal hazen williams diametro 4 pulgadas 200 metros flujo", "route": "crysl-jit-v2.1", "layer": "0.5", "latency_ms": 151, "llm": false},
+      {"query": "que es un transformador electrico de 50 kva voltaje", "route": "crysl-jit-v2.1", "layer": "0.5", "latency_ms": 124, "llm": false},
+      {"query": "hola buenos dias como estas", "route": "block", "layer": "0.0", "latency_ms": 71, "llm": false},
+      {"query": "factura electronica igv renta planilla gratificacion cts contabilidad", "route": "qomni-direct-v0.59", "layer": "0.59", "latency_ms": 413, "llm": false}
+    ],
+    "avg_ms": 205, "bypass_rate": "100%"
+  },
+  "run_2": {
+    "queries": [
+      {"query": "cuantos hp necesita una bomba nfpa20 para 750 gpm", "route": "crysl-jit-v2.1", "layer": "0.5", "latency_ms": 148, "llm": false},
+      {"query": "como constituir una empresa en peru sunat ruc contrato", "route": "qomni-direct-v0.59", "layer": "0.59", "latency_ms": 378, "llm": false},
+      {"query": "calcular caudal hazen williams diametro 4 pulgadas 200 metros flujo", "route": "crysl-jit-v2.1", "layer": "0.5", "latency_ms": 130, "llm": false},
+      {"query": "que es un transformador electrico de 50 kva voltaje", "route": "crysl-jit-v2.1", "layer": "0.5", "latency_ms": 114, "llm": false},
+      {"query": "hola buenos dias como estas", "route": "block", "layer": "0.0", "latency_ms": 51, "llm": false},
+      {"query": "factura electronica igv renta planilla gratificacion cts contabilidad", "route": "qomni-direct-v0.59", "layer": "0.59", "latency_ms": 335, "llm": false}
+    ],
+    "avg_ms": 193, "bypass_rate": "100%"
+  },
+  "combined": {
+    "total_queries": 12,
+    "llm_bypassed": 12,
+    "bypass_rate": "100%",
+    "avg_latency_ms": 199,
+    "min_latency_ms": 51,
+    "max_latency_ms": 413,
+    "llm_baseline_ms": "8000-45000",
+    "speedup": "40-220x",
+    "route_distribution": {
+      "crysl-jit": 6,
+      "qomni-direct-v0.59": 4,
+      "reflex-block": 2
+    }
+  }
+}

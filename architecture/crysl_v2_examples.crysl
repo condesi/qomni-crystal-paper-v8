@@ -1,0 +1,173 @@
+// CRYS-L v2 — Standard Library Examples
+// Open standard — MIT License
+// Submit new plans via PR to condesi/qomni-crystal-paper-v8
+
+// ────────────────────────────────────────────────────────────────────────────
+// HYDRAULICS
+// ────────────────────────────────────────────────────────────────────────────
+
+plan_hazen_williams(
+    Q: f64,           // flow rate (L/s)
+    D: f64,           // internal diameter (mm)
+    C: f64 = 120.0,   // roughness coefficient (PVC=140, steel=120, CI=100)
+    L: f64            // pipe length (m)
+) {
+    meta {
+        standard: "Hazen-Williams (SI units)",
+        source: "IS.010 Peru / AWWA M22 / RNE OS.050",
+        domain: "hidraulica",
+        version: "2.0",
+    }
+
+    const A = 3.14159 * pow(D / 1000.0, 2.0) / 4.0;
+    let V = Q / (1000.0 * A);
+    let R = (D / 1000.0) / 4.0;
+    let S = pow(V / (0.8492 * C * pow(R, 0.63)), 1.0 / 0.54);
+    let h_loss = S * L;
+    let Re = V * (D / 1000.0) / 0.000001;
+
+    assert Q > 0.0   msg "flow rate must be positive";
+    assert D > 0.0   msg "diameter must be positive";
+    assert C > 0.0   msg "roughness coefficient must be positive";
+    assert L > 0.0   msg "pipe length must be positive";
+
+    formula "Hazen-Williams velocity (SI)": "V = 0.8492 · C · R^0.63 · S^0.54";
+    formula "Head loss": "h_f = S · L";
+
+    output V      label "Flow velocity"  unit "m/s";
+    output h_loss label "Head loss"      unit "m";
+    output A      label "Pipe area"      unit "m²";
+    output Re     label "Reynolds number" unit "-";
+}
+
+
+plan_pump_sizing(
+    Q_gpm: f64,         // required flow (GPM)
+    P_psi: f64,         // required pressure (PSI)
+    eff:   f64 = 0.70   // pump efficiency (0.0-1.0)
+) {
+    meta {
+        standard: "NFPA 20:2022 - Standard for the Installation of Stationary Pumps",
+        source: "NFPA 20:2022, Section 4.26 and Chapter 6",
+        domain: "nfpa_electrico",
+        version: "2.0",
+    }
+
+    const GPM_TO_LPS = 0.06309;
+    const PSI_TO_M   = 0.70307;
+
+    let Q_lps    = Q_gpm * GPM_TO_LPS;
+    let H_m      = P_psi * PSI_TO_M;
+    let HP_req   = (Q_lps * H_m) / (eff * 76.04);
+    let HP_max   = HP_req * 1.20;  // NFPA 20: shutoff head ≤ 140% rated
+
+    assert Q_gpm > 0.0  msg "flow must be positive";
+    assert P_psi > 0.0  msg "pressure must be positive";
+    assert eff   > 0.0  msg "efficiency must be > 0";
+    assert eff   <= 1.0 msg "efficiency must be ≤ 1.0";
+
+    formula "Pump power": "HP = (Q × H) / (eff × 76.04)";
+
+    output HP_req  label "Fire pump HP required" unit "HP";
+    output HP_max  label "Max shutoff HP (NFPA)" unit "HP";
+    output Q_lps   label "Flow rate"             unit "L/s";
+    output H_m     label "Total dynamic head"    unit "m";
+}
+
+
+// ────────────────────────────────────────────────────────────────────────────
+// ELECTRICAL
+// ────────────────────────────────────────────────────────────────────────────
+
+plan_voltage_drop(
+    P_kw:  f64,           // load power (kW)
+    V:     f64,           // nominal voltage (V) — e.g. 220, 380
+    L:     f64,           // cable run ONE-WAY (m)
+    fp:    f64 = 0.90,    // power factor
+    rho:   f64 = 0.0175   // resistivity Ω·mm²/m (copper=0.0175, alu=0.028)
+) {
+    meta {
+        standard: "IEC 60364-5-52:2009 / NEC 210.19",
+        source: "IEC 60364:2019, NEC 2023 Article 210",
+        domain: "nfpa_electrico",
+        version: "2.0",
+    }
+
+    let I        = (P_kw * 1000.0) / (V * fp);
+    let I_design = I * 1.25;   // NEC 125% continuous load rule
+    let drop_lim = V * 0.03;   // 3% max drop (IEC recommendation)
+    let S_min    = (2.0 * rho * L * I) / drop_lim;
+    let delta_V  = (2.0 * rho * L * I) / S_min;
+    let drop_pct = (delta_V / V) * 100.0;
+
+    assert P_kw  > 0.0  msg "power must be positive";
+    assert V     > 0.0  msg "voltage must be positive";
+    assert L     > 0.0  msg "cable length must be positive";
+    assert fp    > 0.0  msg "power factor must be > 0";
+    assert fp    <= 1.0 msg "power factor must be ≤ 1.0";
+
+    formula "Nominal current": "I = P / (V × fp)";
+    formula "Min cross-section": "S = (2 × ρ × L × I) / ΔV_max";
+    formula "Voltage drop": "ΔV = (2 × ρ × L × I) / S";
+
+    output I        label "Nominal current"        unit "A";
+    output I_design label "Design current (125%)"  unit "A";
+    output S_min    label "Min cable section"       unit "mm²";
+    output delta_V  label "Voltage drop"            unit "V";
+    output drop_pct label "Drop percentage"         unit "%";
+}
+
+
+plan_transformer_sizing(
+    P_kw:  f64,          // total connected load (kW)
+    fp:    f64 = 0.85,   // power factor
+    fu:    f64 = 0.80    // utilization factor (demand factor)
+) {
+    meta {
+        standard: "IEC 60076-1:2011 — Power Transformers",
+        source: "IEC 60076-1:2011, NFPA 70E",
+        domain: "nfpa_electrico",
+        version: "2.0",
+    }
+
+    let P_kva_raw = (P_kw * fu) / fp;
+    let P_kva     = P_kva_raw * 1.15;   // 15% margin for growth
+
+    // Standard commercial sizes (kVA)
+    // 5, 10, 15, 25, 37.5, 50, 75, 100, 167, 250, 333, 500, 750, 1000
+
+    assert P_kw > 0.0  msg "load must be positive";
+    assert fp   > 0.0  msg "power factor must be > 0";
+    assert fu   > 0.0  msg "utilization factor must be > 0";
+
+    formula "Apparent power": "S = (P × fu) / fp";
+    formula "Design kVA (+15%)": "S_design = S × 1.15";
+
+    output P_kva_raw label "Required kVA"     unit "kVA";
+    output P_kva     label "Design kVA (+15%)" unit "kVA";
+}
+
+
+// ────────────────────────────────────────────────────────────────────────────
+// COMMUNITY CONTRIBUTION TEMPLATE
+// ────────────────────────────────────────────────────────────────────────────
+
+// plan_your_calculation(
+//     param1: f64,        // description (unit)
+//     param2: f64 = 1.0  // description with default
+// ) {
+//     meta {
+//         standard: "STANDARD NAME:YEAR — Full Title",
+//         source: "STANDARD, Section X.X",
+//         domain: "hidraulica | nfpa_electrico | civil | mecanica | termica | sanitaria",
+//         version: "2.0",
+//     }
+//
+//     // your formulas here
+//
+//     assert param1 > 0.0 msg "param1 must be positive";
+//
+//     formula "Formula name": "symbolic representation";
+//
+//     output result label "Result label" unit "unit";
+// }
